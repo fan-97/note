@@ -1,4 +1,5 @@
 代码
+
 ```
 from Crypto import Random
 from Crypto.PublicKey import RSA
@@ -12,7 +13,8 @@ def rsa_encrypt(message):
         cipher = Cipher_pkcs1_v1_5.new(rsakey)
         cipher_text = base64.b64encode(cipher.encrypt(message))
     return cipher_text
-```python
+    
+```
 
 原因：PyCryptodome 不支持x509格式的证书
 解决：先将证书的公钥导出来，然后再使用 RSA.importKey()
@@ -21,6 +23,7 @@ def rsa_encrypt(message):
 openssl x509 -inform der -in xx.per -pubkey -noout > xx.pem
 
 ## 2.修改代码如下
+
 ```
 def rsa_encrypt(message):
     with open('xx.pem', mode='rb') as f:
@@ -29,5 +32,6 @@ def rsa_encrypt(message):
         cipher = Cipher_pkcs1_v1_5.new(rsakey)
         cipher_text = base64.b64encode(cipher.encrypt(message))
     return cipher_text
-```python    
 
+```
+    
