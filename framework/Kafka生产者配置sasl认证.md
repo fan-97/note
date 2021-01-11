@@ -1,3 +1,4 @@
+```
 {
 	"bootstrap.servers": "11.33.144.54:9092",
 	"compression.type": "none",
@@ -13,3 +14,4 @@
 	"sasl.mechanism": "PLAIN",
 	"security.protocol": "SASL_PLAINTEXT"
 }
+```
