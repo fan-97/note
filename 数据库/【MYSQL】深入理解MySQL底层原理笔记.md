@@ -1,0 +1,66 @@
+# 索引数据结构
+MySQL索引使用的数据结构是B+树和hash，常用的是B+树。因为hash对范围查询和模糊查询不友好
+## B树
+
+- 叶节点具有相同的深度，叶节点的指针为空
+- 所有索引元素不重复
+- 节点中的数据索引从左到右递增排列
+## B+树
+
+- 非叶子节点不存储data，只存储索引（冗余），可以放更多的索引
+- 叶子节点包含所有的索引字段
+- 叶子节点用指针连接，提高区间访问的性能
+
+​
+
+# 存储引擎
+## MyISAM引擎
+
+- 不支持事务
+- 表锁设计
+- 支持全文检索
+### 索引实现（非聚集）
+
+-  索引文件（MYI）和数据文件（MYD）分开存储
+
+
+
+## InnoDB引擎
+
+- 支持事务
+- 行锁设计
+- 支持外键
+### 索引实现（聚集）
+
+- 表数据文件本身是一个B+树结构的索引结构文件（IDB）
+- 聚集索引-叶子节点包含了完整的数据记录
+- 为什么InnoDB表必须要有主键，并且推荐用自增主键？
+- 为什么非主键索引结构叶子节点存储的是主键值？（一致性和节省空间）
+## NDB引擎
+
+- 集群存储引擎
+- 数据全部放在内存（5.1之后，非索引数据存放到磁盘）
+## Memory引擎
+
+- 哈希索引
+- 数据存在内存中
+## Archive引擎
+
+- 只支持INSERT和SELECT操作
+
+
+
+## Federated引擎
+
+- 不存放数据，而是指向远程的mysql数据表
+## Maria引擎
+
+-  MyISAM的升级版本，为了替代它
+- 支持缓存数据和索引文件
+- 行锁设计
+- MVCC
+- 支持事务
+## MySQL存储引擎相关特性支持
+![image.png](https://cdn.nlark.com/yuque/0/2021/png/1726219/1622722874169-b708cac3-367a-4a59-9f01-b5a147ff824d.png#clientId=ubb74b4d0-f303-4&from=paste&height=485&id=u65c0ecaf&margin=%5Bobject%20Object%5D&name=image.png&originHeight=485&originWidth=701&originalType=binary&ratio=1&size=147535&status=done&style=none&taskId=u516fb6f2-b59f-47ce-afe7-01b90eb1f20&width=701)
+​
+

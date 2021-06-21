@@ -1,0 +1,3 @@
+- 一级缓存 singletonObjects
+- 二级缓存 earlySingletonObjects
+- 三级缓存 singletonFactories
