@@ -11,7 +11,7 @@ MySQL索引使用的数据结构是B+树和hash，常用的是B+树。因为hash
 - 叶子节点包含所有的索引字段
 - 叶子节点用指针连接，提高区间访问的性能
 
-​
+
 
 # 存储引擎
 ## MyISAM引擎
@@ -61,6 +61,6 @@ MySQL索引使用的数据结构是B+树和hash，常用的是B+树。因为hash
 - MVCC
 - 支持事务
 ## MySQL存储引擎相关特性支持
-![image.png](https://cdn.nlark.com/yuque/0/2021/png/1726219/1622722874169-b708cac3-367a-4a59-9f01-b5a147ff824d.png#clientId=ubb74b4d0-f303-4&from=paste&height=485&id=u65c0ecaf&margin=%5Bobject%20Object%5D&name=image.png&originHeight=485&originWidth=701&originalType=binary&ratio=1&size=147535&status=done&style=none&taskId=u516fb6f2-b59f-47ce-afe7-01b90eb1f20&width=701)
-​
+![](https://fnoteimg.oss-cn-chengdu.aliyuncs.com/img/20210621212139.png)
+
 
