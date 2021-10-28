@@ -268,3 +268,113 @@ type TypeB struct {
 
 # 函数
 
+- init函数
+  - init 函数： 会在包初始化时运行
+  - 当多个依赖项目引用统一项目，且被引用项目的初始化在init中完成，并且不可重复运行时，会导致启动错误
+
+- 参数解析
+
+  - 给main函数传入参数的方式：
+    - 方式1：
+      - fmt.Println("os args is :",os.Args)
+    - 方式2：
+      - name := flag.String("name","world","specify  the name you want to say hi")
+      - flag.Parse()
+
+- 返回值
+
+  - 多值返回
+
+  - 命名返回值
+
+    - Go 的返回值可以被命名，他们会被视作定义在函数顶部的变量
+    - 返回值的名称应当具有一定的意义，它可以做为文档使用
+    - 直接使用 `return ` 返回已经命名的返回值
+
+    ```go
+    func test(input string) (err error, result string) {
+    	if input == "aaa" {
+    		err = fmt.Errorf("not support aaa")
+    		return
+    	}
+    	result = input + input
+    	return
+    }
+    ```
+
+    
+
+  - 调用者忽略部分返回值
+
+    result,_ = strconv.Atoi(origStr)
+
+- 内置函数
+
+| 函数名            | 作用                            |
+| ----------------- | ------------------------------- |
+| close             | 管道关闭                        |
+| len,cap           | 返回数组、切片，Map的长度或容量 |
+| new,make          | 内存分配                        |
+| copy,append       | 操作切片                        |
+| panic,recover     | 错误处理                        |
+| print,println     | 打印                            |
+| complex,real,imag | 操作复数                        |
+
+- 回调函数
+
+  - 函数可以作为参数传入其他函数，并在其他函数内部调用执行
+
+  ```go
+  func main() {
+  	// DoOperation(1, increase)
+  	DoOperation(11, decrease)
+  }
+  // 第二个参数就是一个回调函数
+  func DoOperation(y int, f func(int, int)) {
+  	f(y, 1)
+  }
+  func increase(a, b int) int {
+  	return a + b
+  }
+  
+  
+  func decrease(a, b int) {
+  	println("decrease result is:", a-b)
+  }
+  ```
+
+- 闭包
+
+  - 匿名函数
+    - 不能独立存在
+    - 可以赋值给其他变量
+      - x:=func(){}
+    - 可以直接调用
+      - func(x,y int ){println(x+y)}(1,2)
+    - 可作为函数返回值
+      - func Add() (func (b int) int){}
+
+
+
+- 方法
+
+  - 作用在接收者上的函数
+
+  `func (recv receiver_type) methodName (parameter_list)(return_value_list)` 
+
+  - 使用场景
+
+    - 很多场景下，函数需要的上下文可以保存在receiver属性中，通过定义receiver的方法，该方法可以直接访问receiver属性，减少参数传递需求
+
+    ```go
+    func (s *Server) StartTLS(){
+    	if s.URL != "" {
+    		panic("Server already started")
+    	}
+    	if s.client == nil{
+    		s.client = &http.Client{Transport: &http.Transport{}}
+    	}
+    }
+    ```
+
+    
