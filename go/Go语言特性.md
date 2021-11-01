@@ -268,47 +268,48 @@ type TypeB struct {
 
 # 函数
 
-- init函数
-  - init 函数： 会在包初始化时运行
-  - 当多个依赖项目引用统一项目，且被引用项目的初始化在init中完成，并且不可重复运行时，会导致启动错误
+## init函数
 
-- 参数解析
+- init 函数： 会在包初始化时运行
+- 当多个依赖项目引用统一项目，且被引用项目的初始化在init中完成，并且不可重复运行时，会导致启动错误
 
-  - 给main函数传入参数的方式：
-    - 方式1：
-      - fmt.Println("os args is :",os.Args)
-    - 方式2：
-      - name := flag.String("name","world","specify  the name you want to say hi")
-      - flag.Parse()
+## 参数解析
 
-- 返回值
+- 给main函数传入参数的方式：
+  - 方式1：
+    - fmt.Println("os args is :",os.Args)
+  - 方式2：
+    - name := flag.String("name","world","specify  the name you want to say hi")
+    - flag.Parse()
 
-  - 多值返回
+## 返回值
 
-  - 命名返回值
+- 多值返回
 
-    - Go 的返回值可以被命名，他们会被视作定义在函数顶部的变量
-    - 返回值的名称应当具有一定的意义，它可以做为文档使用
-    - 直接使用 `return ` 返回已经命名的返回值
+- 命名返回值
 
-    ```go
-    func test(input string) (err error, result string) {
-    	if input == "aaa" {
-    		err = fmt.Errorf("not support aaa")
-    		return
-    	}
-    	result = input + input
-    	return
-    }
-    ```
+  - Go 的返回值可以被命名，他们会被视作定义在函数顶部的变量
+  - 返回值的名称应当具有一定的意义，它可以做为文档使用
+  - 直接使用 `return ` 返回已经命名的返回值
 
-    
+  ```go
+  func test(input string) (err error, result string) {
+  	if input == "aaa" {
+  		err = fmt.Errorf("not support aaa")
+  		return
+  	}
+  	result = input + input
+  	return
+  }
+  ```
 
-  - 调用者忽略部分返回值
+  
 
-    result,_ = strconv.Atoi(origStr)
+- 调用者忽略部分返回值
 
-- 内置函数
+  result,_ = strconv.Atoi(origStr)
+
+## 内置函数
 
 | 函数名            | 作用                            |
 | ----------------- | ------------------------------- |
@@ -320,61 +321,319 @@ type TypeB struct {
 | print,println     | 打印                            |
 | complex,real,imag | 操作复数                        |
 
-- 回调函数
+## 回调函数
 
-  - 函数可以作为参数传入其他函数，并在其他函数内部调用执行
+- 函数可以作为参数传入其他函数，并在其他函数内部调用执行
+
+```go
+func main() {
+	// DoOperation(1, increase)
+	DoOperation(11, decrease)
+}
+// 第二个参数就是一个回调函数
+func DoOperation(y int, f func(int, int)) {
+	f(y, 1)
+}
+func increase(a, b int) int {
+	return a + b
+}
+
+
+func decrease(a, b int) {
+	println("decrease result is:", a-b)
+}
+```
+
+## 闭包
+
+- 匿名函数
+  - 不能独立存在
+  - 可以赋值给其他变量
+    - x:=func(){}
+  - 可以直接调用
+    - func(x,y int ){println(x+y)}(1,2)
+  - 可作为函数返回值
+    - func Add() (func (b int) int){}
+
+
+
+## 方法
+
+- 作用在接收者上的函数
+
+`func (recv receiver_type) methodName (parameter_list)(return_value_list)` 
+
+- 使用场景
+
+  - 很多场景下，函数需要的上下文可以保存在receiver属性中，通过定义receiver的方法，该方法可以直接访问receiver属性，减少参数传递需求
 
   ```go
-  func main() {
-  	// DoOperation(1, increase)
-  	DoOperation(11, decrease)
-  }
-  // 第二个参数就是一个回调函数
-  func DoOperation(y int, f func(int, int)) {
-  	f(y, 1)
-  }
-  func increase(a, b int) int {
-  	return a + b
-  }
-  
-  
-  func decrease(a, b int) {
-  	println("decrease result is:", a-b)
+  func (s *Server) StartTLS(){
+  	if s.URL != "" {
+  		panic("Server already started")
+  	}
+  	if s.client == nil{
+  		s.client = &http.Client{Transport: &http.Transport{}}
+  	}
   }
   ```
 
-- 闭包
 
-  - 匿名函数
-    - 不能独立存在
-    - 可以赋值给其他变量
-      - x:=func(){}
-    - 可以直接调用
-      - func(x,y int ){println(x+y)}(1,2)
-    - 可作为函数返回值
-      - func Add() (func (b int) int){}
+## 接口
 
+- 接口定义一组方法集合
 
+```go
+type IF interface {
+    Method1(param_list) return_type
+}
+```
 
-- 方法
+- 适用场景：Kubernetes中有大量的接口抽象和多种实现
+- Struct无需显示声明实现interface，只需要直接实现方法
+- Struct除实现interface定义的接口外，还可以有额外的方法
+- 一个类型可实现多个接口
+- Go语言中接口不接受属性定义
+- 接口可以嵌套其他接口
 
-  - 作用在接收者上的函数
+- 反射机制
 
-  `func (recv receiver_type) methodName (parameter_list)(return_value_list)` 
+  在运行时，获取对象的类型和值
 
-  - 使用场景
+  - reflect.TypeOf() 返回被检查对象的类型
 
-    - 很多场景下，函数需要的上下文可以保存在receiver属性中，通过定义receiver的方法，该方法可以直接访问receiver属性，减少参数传递需求
+  - reflect.ValueOf()返回被检查对象的值
 
     ```go
-    func (s *Server) StartTLS(){
-    	if s.URL != "" {
-    		panic("Server already started")
+    func main() {
+    	// basic type
+    	myMap := make(map[string]string, 10)
+    	myMap["a"] = "b"
+    	myMap["b"] = "c"
+    	t := reflect.TypeOf(myMap)
+    	fmt.Println("type:", t)
+    	v := reflect.ValueOf(myMap)
+    	fmt.Println("value:", v)
+    	// struct
+    	myStruct := T{A: "a"}
+    	v1 := reflect.ValueOf(myStruct)
+    	for i := 0; i < v1.NumField(); i++ {
+    		fmt.Printf("Field %d: %v\n", i, v1.Field(i))
     	}
-    	if s.client == nil{
-    		s.client = &http.Client{Transport: &http.Transport{}}
+    	for i := 0; i < v1.NumMethod(); i++ {
+    		fmt.Printf("Method %d: %v\n", i, v1.Method(i))
     	}
+    	// 需要注意receive是struct还是指针
+    	result := v1.Method(0).Call(nil)
+    	fmt.Println("result:", result)
     }
+    
+    type T struct {
+    	A string
+    }
+    
+    // 需要注意receive是struct还是指针
+    func (t T) String() string {
+    	return t.A + "1"
+    }
+    
     ```
 
-    
+    ```
+    # 输出
+    type: map[string]string
+    value: map[a:b b:c]
+    Field 0: a
+    Method 0: 0xf29040
+    result: [a1]
+    ```
+
+---
+
+# 常用语法
+
+## 错误处理
+
+通过errors.New 或fmt.Errorf 创建新的error
+
+```go
+var errNotFound error = errors.New("NotFound")
+```
+
+判断error是否为空来处理error
+
+## defer
+
+函数返回之前执行某个语句或函数
+
+如果有多个`defer `  ，执行顺序则是`先进后出`
+
+> 等同于java的fianny
+
+- 常见defer使用场景:
+  - defer file.Close()
+  - defer.muUnlock()
+  - defer println("")
+
+## Panic 和 recover
+
+- panic: 可在系统出现不可恢复错误时主动调用panic,会直接让线程crash
+- defer：用来保证panic之后函数还能执行
+- recover：函数从panic场景恢复
+
+```go
+defer func(){
+    fmt.Println("defer func is called")
+    if err := recover(); err != nil{
+        fmt.Println(err)
+    }
+}()
+panic("a panic is triggered ")
+```
+
+
+
+# 多线程
+
+在go里面使用 `go` 关键字来使用`协程`
+
+## channel——多线程通信
+
+Channel 是多个协程之间通信的管道.**只有发送方需要关闭通道** 
+
+- 一端发送数据，一端接收数据
+- 同一时间只有一个协程可以访问数据，无共享内存模式可能出现内存竞争
+- 协调协程的执行顺序
+
+声明方式：
+
+- `var identifier chan datatype`
+- 操作符 <-
+
+for examlple:
+
+```go
+ch := make(chan int) //定义一个channel
+go func(){
+    fmt.Println("hello from goroutine")
+    ch <- 0// 数据写入Channel
+}()
+i := <- ch// 从Channel中取数据并赋值
+```
+
+### 单向通道
+
+只写通道 writeOnly
+
+```go
+var writeOnly chan<- int
+```
+
+只读通道 readOnly
+
+```go
+var readOnly <-chan int
+```
+
+双向通道转换：
+
+```go
+var c =  make( chan int) 
+go prod(c)
+go consume(c)
+func prod( ch chan<- int){
+	for {  ch<- 1 }
+}
+func consume( ch<-chan int) {
+	for { <-ch}
+}
+```
+
+
+
+### select
+
+当多个协程同时运行时，通过select轮询多个通道
+
+类似于 `switch....case....default`
+
+多个通道都准备就绪则随机选择
+
+```go
+select {
+case v:= <- ch1:// 从通道1读取数据
+    ....
+case v:= <- ch2:// 从通道2读取数据
+    ...
+}
+```
+
+### Timer——定时器
+
+可以用来判断通道超时 自带通道`time.C` 
+
+time.NewTime(seconds)// 起一个timer，每隔seconds时间向time.C通道中写数据，
+
+### Context——上下文
+
+- 超时、取消操作或者一些异常情况，往往需要进行抢占操作或者中断后续操作
+
+- Context 是设置截止日期、同步信号，传递请求相关值的结构体
+
+- 用法
+
+  - context.Background
+
+    > 顶层context，一般来说创建的context都基于Background
+
+  - context.TODO
+
+    > TODO 是在不确定用什么context的时候使用
+
+  - context.WithDeadline
+
+    > 超时时间
+
+  - context.WithValue
+
+    > 向context添加键值对
+
+  - context.WithCancel
+
+    > 创建一个可取消的context
+
+```go
+func main() {
+    // 顶层context
+	baseCtx := context.Background()
+    // 给context设置value
+	ctx := context.WithValue(baseCtx, "a", "b")
+    // 起一个协程来从context获取值
+	go func(c context.Context) {
+		fmt.Println(c.Value("a"))
+	}(ctx)
+	timeoutCtx, cancel := context.WithTimeout(baseCtx, time.Second)
+	defer cancel()
+	go func(ctx context.Context) {
+		ticker := time.NewTicker(1 * time.Second)
+		for _ = range ticker.C {
+			select {
+			case <-ctx.Done():
+				fmt.Println("child process interrupt...")
+				return
+			default:
+				fmt.Println("enter default")
+			}
+		}
+	}(timeoutCtx)
+	select {
+	case <-timeoutCtx.Done():
+		time.Sleep(1 * time.Second)
+		fmt.Println("main process exit!")
+	}
+	// time.Sleep(time.Second * 5)
+}
+```
+
+# 锁
+
